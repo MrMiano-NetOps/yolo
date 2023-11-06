@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: ecom-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecom-frontend
+  template:
+    metadata:
+      labels:
+        app: ecom-frontend
+    spec:
+      containers:
+      - name: ecom-frontend
+        image: mrmiano/ecom-client-image:v1.0.0
+        imagePullPolicy: Always
+        tty: true
+        ports:
+        - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: ecom-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
